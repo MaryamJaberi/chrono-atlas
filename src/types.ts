@@ -15,7 +15,7 @@ export interface ProjectCardContent {
 }
 
 export interface AtlasView {
-  id: 'earth' | 'life' | 'civilizations' | 'iran' | 'sources';
+  id: 'thematicMap' | 'earth' | 'life' | 'civilizations' | 'iran' | 'sources';
   nameEn: string;
   nameFa: string;
   nameNl: string;

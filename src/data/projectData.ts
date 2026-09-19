@@ -1,7 +1,9 @@
 import { ProjectCardContent, AtlasView, TimelineEpoch, IranStateHighlight } from '../types';
 
 export const GITHUB_REPO_URL = 'https://github.com/MaryamJaberi/chrono-atlas';
-export const LIVE_DEMO_URL = 'https://maryamjaberi.github.io/chrono-atlas/';
+export const LIVE_DEMO_URL = 'https://ais-pre-dteccvvwazpazpci3vjfiu-959375435927.europe-west2.run.app';
+export const GITHUB_PAGES_URL = 'https://maryamjaberi.github.io/chrono-atlas/';
+export const CREATE_GITHUB_REPO_URL = 'https://github.com/new?name=chrono-atlas&description=Interactive+atlas+of+Earth+through+time';
 export const PORTFOLIO_REPO_URL = 'https://github.com/MaryamJaberi/MaryamJaberi.github.io';
 
 export const PROJECT_CONTENTS: Record<'en' | 'fa' | 'nl', ProjectCardContent> = {

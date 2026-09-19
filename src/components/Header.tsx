@@ -1,118 +1,124 @@
-import React from 'react';
-import { Globe, Github, ExternalLink, Sparkles, BookOpen, Layers } from 'lucide-react';
+import React, { useState } from 'react';
+import { Globe, Volume2, VolumeX, RotateCcw, Share2, Compass } from 'lucide-react';
 import { LanguageKey } from '../types';
-import { GITHUB_REPO_URL, LIVE_DEMO_URL, PORTFOLIO_REPO_URL } from '../data/projectData';
+import { ambientSound } from '../utils/audioSynth';
 
 interface HeaderProps {
   currentLang: LanguageKey;
   onLanguageChange: (lang: LanguageKey) => void;
-  onOpenExportModal: () => void;
-  onOpenGithubGuide: () => void;
+  activeLens: 'thematicMap' | 'earth' | 'life' | 'civilizations' | 'iran' | 'sources';
+  onSelectLens: (lens: 'thematicMap' | 'earth' | 'life' | 'civilizations' | 'iran' | 'sources') => void;
+  onOpenDeployModal: () => void;
+  onResetTime: () => void;
+  currentEpochName: string;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   currentLang,
   onLanguageChange,
-  onOpenExportModal,
-  onOpenGithubGuide,
+  activeLens,
+  onSelectLens,
+  onOpenDeployModal,
+  onResetTime,
+  currentEpochName,
 }) => {
   const isFa = currentLang === 'fa';
+  const [isAudioActive, setIsAudioActive] = useState(false);
+
+  const toggleAudio = () => {
+    const active = ambientSound.toggle();
+    setIsAudioActive(active);
+  };
 
   return (
-    <header className="sticky top-0 z-50 backdrop-blur-xl bg-slate-950/85 border-b border-slate-800/80">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-4">
-        {/* Logo & Brand */}
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-600 via-amber-500 to-yellow-400 p-[1px] shadow-lg shadow-amber-500/20">
-            <div className="w-full h-full bg-slate-950 rounded-[11px] flex items-center justify-center">
-              <span className="text-amber-400 font-cinzel font-bold text-lg">⏳</span>
-            </div>
+    <header className="sticky top-0 z-40 bg-[#0A0E17]/95 backdrop-blur-md border-b border-white/10">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-3">
+        {/* Logo & Current Focus */}
+        <div className="flex items-center gap-2.5 sm:gap-3 cursor-pointer select-none" onClick={onResetTime}>
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-amber-500/20 to-emerald-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 shrink-0 shadow-sm">
+            <Compass className="w-4 h-4 sm:w-5 sm:h-5 animate-spin-slow" />
           </div>
-          <div>
+
+          <div className="flex flex-col">
             <div className="flex items-center gap-2">
-              <span className="font-cinzel text-lg sm:text-xl font-bold tracking-tight text-white">
-                Chrono Atlas
+              <span className="text-base sm:text-lg font-bold text-white tracking-normal font-vazir leading-tight">
+                {isFa ? 'کرونو اطلس' : 'Chrono Atlas'}
               </span>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 font-medium">
-                v1.0
+              <span className="hidden md:inline text-[11px] px-2 py-0.5 rounded-md bg-white/5 text-slate-300 border border-white/10 font-num">
+                {currentEpochName}
               </span>
             </div>
-            <p className="text-xs text-slate-400 hidden sm:block">
-              {isFa ? 'اطلس تعاملی زمین و زمان · مریم جابری' : 'Interactive Atlas of Earth through Time · Maryam Jaberi'}
-            </p>
+            <span className="text-[11px] text-slate-400 hidden sm:inline leading-none">
+              {isFa ? 'اطلس زمین و حیات در گذر زمان' : 'Interactive Atlas of Deep Time'}
+            </span>
           </div>
         </div>
 
         {/* Action Controls */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          {/* Language Switcher */}
-          <div className="flex items-center p-1 bg-slate-900 border border-slate-800 rounded-lg text-xs">
+        <div className="flex items-center gap-1.5 sm:gap-2.5">
+          {/* Ambient Sound Button */}
+          <button
+            onClick={toggleAudio}
+            className={`p-2 rounded-xl text-xs border transition-all flex items-center gap-1.5 ${
+              isAudioActive
+                ? 'bg-amber-500/15 text-amber-400 border-amber-500/40 shadow-sm'
+                : 'bg-white/5 text-slate-400 border-white/10 hover:text-white hover:bg-white/10'
+            }`}
+            title={isFa ? 'صدای محیطی زمان عمیق' : 'Deep Time Ambient Audio'}
+          >
+            {isAudioActive ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+            <span className="hidden sm:inline text-xs font-vazir">
+              {isAudioActive ? (isFa ? 'صدا روشن' : 'Audio On') : (isFa ? 'صدا' : 'Mute')}
+            </span>
+          </button>
+
+          {/* Reset to Present Button */}
+          <button
+            onClick={onResetTime}
+            className="p-2 rounded-xl text-xs bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white border border-white/10 transition-all flex items-center gap-1"
+            title={isFa ? 'بازنشانی به زمان حال' : 'Reset to Present'}
+          >
+            <RotateCcw className="w-4 h-4" />
+            <span className="hidden md:inline text-xs font-vazir">
+              {isFa ? 'زمان حال' : 'Now'}
+            </span>
+          </button>
+
+          {/* Share / Link Modal */}
+          <button
+            onClick={onOpenDeployModal}
+            className="p-2 rounded-xl text-xs bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold transition-all flex items-center gap-1 shadow-sm"
+            title={isFa ? 'اشتراک‌گذاری و لینک آنلاین' : 'Share & Online Link'}
+          >
+            <Share2 className="w-4 h-4" />
+            <span className="text-xs font-vazir">
+              {isFa ? 'اشتراک' : 'Share'}
+            </span>
+          </button>
+
+          {/* Clean Language Selector */}
+          <div className="flex items-center bg-white/5 border border-white/10 rounded-xl p-0.5 text-xs">
             <button
-              id="lang-btn-fa"
               onClick={() => onLanguageChange('fa')}
-              className={`px-2.5 py-1 rounded transition-all font-medium ${
+              className={`px-2 py-1 rounded-lg transition-all font-medium font-vazir ${
                 currentLang === 'fa'
-                  ? 'bg-amber-500 text-slate-950 font-bold shadow'
+                  ? 'bg-amber-500 text-slate-950 font-bold'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
-              فارسی
+              فا
             </button>
             <button
-              id="lang-btn-en"
               onClick={() => onLanguageChange('en')}
-              className={`px-2.5 py-1 rounded transition-all font-medium ${
+              className={`px-2 py-1 rounded-lg transition-all font-medium ${
                 currentLang === 'en'
-                  ? 'bg-amber-500 text-slate-950 font-bold shadow'
+                  ? 'bg-amber-500 text-slate-950 font-bold'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
               EN
             </button>
-            <button
-              id="lang-btn-nl"
-              onClick={() => onLanguageChange('nl')}
-              className={`px-2.5 py-1 rounded transition-all font-medium ${
-                currentLang === 'nl'
-                  ? 'bg-amber-500 text-slate-950 font-bold shadow'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              NL
-            </button>
           </div>
-
-          {/* GitHub Guide button */}
-          <button
-            id="open-github-guide-btn"
-            onClick={onOpenGithubGuide}
-            className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors"
-          >
-            <Github className="w-3.5 h-3.5 text-slate-300" />
-            <span>{isFa ? 'راهنمای گیت‌هاب' : 'GitHub Guide'}</span>
-          </button>
-
-          {/* Code Export button */}
-          <button
-            id="copy-snippet-top-btn"
-            onClick={onOpenExportModal}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/40 transition-colors"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            <span>{isFa ? 'کد پورتفولیو' : 'Get Portfolio Code'}</span>
-          </button>
-
-          {/* Direct Live Demo Link */}
-          <a
-            id="header-live-demo-link"
-            href={LIVE_DEMO_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-md shadow-amber-500/20 transition-all"
-          >
-            <span>{isFa ? 'نسخه زنده' : 'Live Demo'}</span>
-            <ExternalLink className="w-3 h-3" />
-          </a>
         </div>
       </div>
     </header>
